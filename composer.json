@@ -1,0 +1,25 @@
+{
+    "name": "slowprog/sparkpost-swiftmailer",
+    "description": "A SwiftMailer transport implementation for SparkPost",
+    "keywords": ["sparkpost", "swiftmailer"],
+    "homepage": "https://github.com/SlowProg/SparkPostSwiftMailer",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Andrey Tyshev",
+            "email": "slowprog@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "sparkpost/php-sparkpost": "~1.0",
+        "swiftmailer/swiftmailer": "~5.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.5"
+    },
+    "autoload": {
+        "psr-0": { "SlowProg\\SparkPostSwiftMailer": "" }
+    },
+    "target-dir": "SlowProg/SparkPostSwiftMailer"
+}
