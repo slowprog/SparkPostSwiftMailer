@@ -19,7 +19,7 @@
         "phpunit/phpunit": "~4.5"
     },
     "autoload": {
-        "psr-0": { "SlowProg\\SparkPostSwiftMailer": "" }
+       "psr-0": { "SlowProg\\SparkPostSwiftMailer": "" }
     },
     "target-dir": "SlowProg/SparkPostSwiftMailer"
 }
