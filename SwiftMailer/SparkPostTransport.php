@@ -116,7 +116,13 @@ class SparkPostTransport implements Swift_Transport
 
         $sparkPost = $this->createSparkPost();
 
-        $this->resultApi = $sparkPost->transmission->send($sparkPostMessage);
+        $promise= $sparkPost->transmissions->post($sparkPostMessage);
+
+        try {
+            $this->resultApi = $promise->wait();
+        } catch (\Exception $e) {
+            throw $e;
+        }
 
         $sendCount = $this->resultApi['results']['total_accepted_recipients'];
 
@@ -205,7 +211,6 @@ class SparkPostTransport implements Swift_Transport
         $fromEmails = array_keys($fromAddresses);
         list($fromFirstEmail, $fromFirstName) = each($fromAddresses);
         $this->fromEmail = $fromFirstEmail;
-        $from = $fromFirstName?$fromFirstName.' <'.$fromFirstEmail.'>':$fromFirstEmail;
 
         $toAddresses = $message->getTo();
         $ccAddresses = $message->getCc() ? $message->getCc() : [];
@@ -228,12 +233,12 @@ class SparkPostTransport implements Swift_Transport
                 )
             );
         }
-
+        $reply_to = null;
         foreach ($replyToAddresses as $replyToEmail => $replyToName) {
             if ($replyToName){
-                $headers['Reply-To'] = sprintf('%s <%s>', $replyToEmail, $replyToName);
+                $reply_to= sprintf('%s <%s>', $replyToName, $replyToEmail);
             } else {
-                $headers['Reply-To'] = $replyToEmail;
+                $reply_to = $replyToEmail;
             }
         }
 
@@ -295,17 +300,27 @@ class SparkPostTransport implements Swift_Transport
         }
 
         $sparkPostMessage = array(
-            'html'       => $bodyHtml,
-            'text'       => $bodyText,
-            'from'       => $from,
-            'subject'    => $message->getSubject(),
             'recipients' => $recipients,
-            'cc'         => $cc,
-            'bcc'        => $bcc,
-            'headers'    => $headers,
+            'reply_to'   => $reply_to,
             'inline_css' => $inlineCss,
-            'tags'       => $tags
+            'tags'       => $tags,
+            'content'    => array (
+                'from' => array (
+                    'name'  => $fromFirstName,
+                    'email' => $fromFirstEmail,
+                ),
+                'subject' => $message->getSubject(),
+                'html'    => $bodyHtml,
+                'text'    => $bodyText,
+            ),
         );
+
+        if(!empty($cc))
+            $sparkPostMessage['cc'] = $cc;
+        if(!empty($bcc))
+            $sparkPostMessage['bcc'] = $bcc;
+        if(!empty($headers))
+            $sparkPostMessage['headers'] = $headers;
 
         if (count($attachments) > 0) {
             $sparkPostMessage['attachments'] = $attachments;
