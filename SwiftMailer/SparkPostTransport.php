@@ -4,7 +4,7 @@ namespace SlowProg\SparkPostSwiftMailer\SwiftMailer;
 
 use SparkPost\SparkPost;
 use GuzzleHttp\Client;
-use Ivory\HttpAdapter\Guzzle6HttpAdapter;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 
 use \Swift_Events_EventDispatcher;
 use \Swift_Events_EventListener;
@@ -90,7 +90,7 @@ class SparkPostTransport implements Swift_Transport
             throw new \Swift_TransportException('Cannot create instance of \SparkPost\SparkPost while API key is NULL');
 
         return new SparkPost(
-            new Guzzle6HttpAdapter(new Client()),
+            new GuzzleAdapter(new Client()),
             ['key' => $this->apiKey]
         );
     }
