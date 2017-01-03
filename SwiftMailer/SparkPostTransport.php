@@ -81,7 +81,7 @@ class SparkPostTransport implements Swift_Transport
     }
 
     /**
-     * @return SparkPost\SparkPost
+     * @return \SparkPost\SparkPost
      * @throws \Swift_TransportException
      */
     protected function createSparkPost()
