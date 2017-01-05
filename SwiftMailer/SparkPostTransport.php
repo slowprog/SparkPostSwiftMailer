@@ -119,7 +119,8 @@ class SparkPostTransport implements Swift_Transport
         $promise= $sparkPost->transmissions->post($sparkPostMessage);
 
         try {
-            $this->resultApi = $promise->wait();
+            $response = $promise->wait();
+            $this->resultApi = $response->getBody();
         } catch (\Exception $e) {
             throw $e;
         }
