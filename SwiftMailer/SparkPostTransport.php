@@ -226,12 +226,19 @@ class SparkPostTransport implements Swift_Transport
         $tags = array();
         $inlineCss = null;
 
+        if($message->getHeaders()->has('X-MC-Tags')){
+            /** @var \Swift_Mime_Headers_UnstructuredHeader $tagsHeader */
+            $tagsHeader = $message->getHeaders()->get('X-MC-Tags');
+            $tags = explode(',', $tagsHeader->getValue());
+        }
+
         foreach ($toAddresses as $toEmail => $toName) {
             $recipients[] = array(
                 'address' => array(
                     'email' => $toEmail,
                     'name'  => $toName,
-                )
+                ),
+                'tags' => $tags,
             );
         }
         $reply_to = null;
@@ -294,17 +301,10 @@ class SparkPostTransport implements Swift_Transport
             $inlineCss = $message->getHeaders()->get('X-MC-InlineCSS')->getValue();
         }
 
-        if($message->getHeaders()->has('X-MC-Tags')){
-            /** @var \Swift_Mime_Headers_UnstructuredHeader $tagsHeader */
-            $tagsHeader = $message->getHeaders()->get('X-MC-Tags');
-            $tags = explode(',', $tagsHeader->getValue());
-        }
-
         $sparkPostMessage = array(
             'recipients' => $recipients,
             'reply_to'   => $reply_to,
             'inline_css' => $inlineCss,
-            'tags'       => $tags,
             'content'    => array (
                 'from' => array (
                     'name'  => $fromFirstName,
