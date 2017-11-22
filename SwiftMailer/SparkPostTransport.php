@@ -305,6 +305,7 @@ class SparkPostTransport implements Swift_Transport
             'recipients' => $recipients,
             'reply_to'   => $reply_to,
             'inline_css' => $inlineCss,
+            'tags'       => $tags,
             'content'    => array (
                 'from' => array (
                     'name'  => $fromFirstName,
